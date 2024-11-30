@@ -1,9 +1,10 @@
-"use client";
+"use client"
 
-import { Button } from "./_components/ui/button";
+import { Button } from "./_components/ui/button"
 
+// SERVER COMPONENTS
 const Home = () => {
   return <Button>test</Button>
-};
+}
 
-export default Home;
+export default Home
