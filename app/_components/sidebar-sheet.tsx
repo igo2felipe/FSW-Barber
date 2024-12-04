@@ -1,10 +1,17 @@
 import { Button } from "./ui/button"
-import { CalendarIcon, HomeIcon, LogOutIcon } from "lucide-react"
+import { CalendarIcon, HomeIcon, LogInIcon, LogOutIcon } from "lucide-react"
 import { SheetClose, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet"
 import { quickSearchOptions } from "../_constants/search"
-import { Avatar, AvatarImage } from "./ui/avatar"
 import Link from "next/link"
 import Image from "next/image"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog"
 
 const SidebarSheet = () => {
   return (
@@ -13,15 +20,41 @@ const SidebarSheet = () => {
         <SheetTitle className="text-left">Menu</SheetTitle>
       </SheetHeader>
 
-      <div className="flex items-center gap-3 border-b border-solid py-5">
-        <Avatar>
+      <div className="flex items-center justify-between gap-3 border-b border-solid py-5">
+        <h2 className="font-bold">Olá, faça seu login</h2>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button size="icon">
+              <LogInIcon />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="w-[90%]">
+            <DialogHeader>
+              <DialogTitle>Faça login na plataforma</DialogTitle>
+              <DialogDescription>
+                Conecte-se usando sua conta do Google.
+              </DialogDescription>
+            </DialogHeader>
+
+            <Button variant="outline" className="gap-1 font-bold">
+              <Image
+                alt="Fazer login com o Google"
+                src="/google.svg"
+                width={18}
+                height={18}
+              />
+              Google
+            </Button>
+          </DialogContent>
+        </Dialog>
+        {/*<Avatar>
           <AvatarImage src="https://s3-alpha-sig.figma.com/img/0253/a980/873ac68aebe436f0d55d07b08c2901da?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=q1Z3X3xflK4D8MfRAeT9EeTVG8CsHOYGlWB~Mastp2Dd99vM7qiZ9XdnuCS4ZjiO0hi9mlMSdbDi02CyTD4JWIEvdF6w1dlqOKG~GhDP~tHFzsHKGXpdlu~DnZAE4oZofz1rFR5Ytn-7b0qEI66IBQqpJmthrBpaSW2rg3TerEWk6y-w00jd5OKVattU2c0eiFFKA5xNZghcsHIIrtOXphSsrHzkfBM2BxM8Otd2WQHPseHsZwQdyx1pbLoQpBtJkQHnfE9hK6OKv2kZKJZmBnNaWzXOepZ0FHPUFywCFUNwC4i3P5zivsgNHAUX~tOwpgI-8P5QUOuhKOmUotdLEQ__" />
         </Avatar>
 
         <div>
           <p className="font-bold">Igor Felipe</p>
           <p className="text-xs">igorfeleonel@gmail.com</p>
-        </div>
+        </div> */}
       </div>
 
       <div className="flex flex-col gap-2 border-b border-solid py-5">
