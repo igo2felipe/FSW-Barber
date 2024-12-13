@@ -11,6 +11,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "./_lib/auth"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
+import { getConfirmedBookings } from "./_data/get-confirmed-bookings"
 
 const Home = async () => {
   const session = await getServerSession(authOptions)
@@ -20,26 +21,7 @@ const Home = async () => {
       name: "desc",
     },
   })
-  const confirmedBookings = session?.user
-    ? await db.booking.findMany({
-        where: {
-          userId: (session.user as any).id,
-          date: {
-            gte: new Date(),
-          },
-        },
-        include: {
-          service: {
-            include: {
-              barbershop: true,
-            },
-          },
-        },
-        orderBy: {
-          date: "asc",
-        },
-      })
-    : []
+  const confirmedBookings = await getConfirmedBookings()
 
   return (
     <div>
@@ -50,11 +32,15 @@ const Home = async () => {
         <h2 className="text-xl font-bold">
           Olá, {session?.user ? session.user.name : "bem vindo"}!
         </h2>
-        <span className="capitalize">
-          {format(new Date(), "EEE, dd ", { locale: ptBR })}
-        </span>
-        <span>&nbsp;de&nbsp;</span>
-        <span>{format(new Date(), "MMMM", { locale: ptBR })}</span>
+        <p>
+          <span className="capitalize">
+            {format(new Date(), "EEEE, dd", { locale: ptBR })}
+          </span>
+          <span>&nbsp;de&nbsp;</span>
+          <span className="capitalize">
+            {format(new Date(), "MMMM", { locale: ptBR })}
+          </span>
+        </p>
 
         {/* BUSCA */}
         <div className="mt-6">
@@ -86,31 +72,37 @@ const Home = async () => {
         {/* IMAGEM */}
         <div className="relative mt-6 h-[150px] w-full">
           <Image
-            alt="Agenda nos melhores com FSW Barber"
+            alt="Agende nos melhores com FSW Barber"
             src="/banner-01.png"
             fill
             className="rounded-xl object-cover"
           />
         </div>
 
-        <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
-          Agendamentos
-        </h2>
+        {confirmedBookings.length > 0 && (
+          <>
+            <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
+              Agendamentos
+            </h2>
 
-        {/* AGENDAMENTO */}
-        <div className="flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
-          {confirmedBookings.map((booking) => (
-            <BookingItem key={booking.id} booking={booking} />
-          ))}
-        </div>
+            {/* AGENDAMENTO */}
+            <div className="flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+              {confirmedBookings.map((booking) => (
+                <BookingItem
+                  key={booking.id}
+                  booking={JSON.parse(JSON.stringify(booking))}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
           Recomendados
         </h2>
-
         <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
-          {barbershops.map((barbershops) => (
-            <BarbershopItem key={barbershops.id} barbershop={barbershops} />
+          {barbershops.map((barbershop) => (
+            <BarbershopItem key={barbershop.id} barbershop={barbershop} />
           ))}
         </div>
 
@@ -118,8 +110,8 @@ const Home = async () => {
           Populares
         </h2>
         <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
-          {popularBarbershops.map((barbershops) => (
-            <BarbershopItem key={barbershops.id} barbershop={barbershops} />
+          {popularBarbershops.map((barbershop) => (
+            <BarbershopItem key={barbershop.id} barbershop={barbershop} />
           ))}
         </div>
       </div>
